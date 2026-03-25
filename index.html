@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Books - Harry Potter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .book-title {
+            font-size: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .tagline {
+            color: #718096;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Progress */
+        .progress-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-track {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* Menu Screen */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .menu-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        .menu-icon {
+            font-size: 40px;
+            min-width: 50px;
+        }
+
+        .menu-text h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .menu-text p {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .menu-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        /* Card View */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-image {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-image.placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 28px;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-section {
+            background: #f7fafc;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: #2d3748;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .card-section strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-hint {
+            background: #e6fffa;
+            padding: 15px;
+            border-radius: 10px;
+            color: #234e52;
+            font-size: 16px;
+            margin-top: auto;
+            border-left: 4px solid #38b2ac;
+            font-weight: 500;
+        }
+
+        /* Chapter View */
+        .chapter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        .chapter-number {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+
+        .info-icon {
+            font-size: 24px;
+            min-width: 30px;
+        }
+
+        .info-text {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-full {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .audio-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            margin: 0 auto 20px;
+            transition: all 0.2s;
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
+            background: #667eea;
+        }
+
+        /* Chapter Grid */
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chapter-bubble {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .chapter-bubble.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #48bb78;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .chapter-bubble:active {
+            transform: scale(0.95);
+        }
+
+        .chapter-bubble-num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .chapter-bubble-label {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .back-btn {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #2d3748;
+        }
+
+        .back-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Icon Guide */
+        .icon-guide-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .icon-guide-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .icon-guide-emoji {
+            font-size: 28px;
+            min-width: 35px;
+        }
+
+        .icon-guide-text {
+            flex: 1;
+        }
+
+        .icon-guide-text strong {
+            display: block;
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .icon-guide-text span {
+            color: #718096;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📚 Nova Books</h1>
+            <div class="book-title">Harry Potter</div>
+            <div class="tagline">Follow the story • No pressure</div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-label">Progress</div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Main Menu Screen -->
+        <div id="menuScreen" class="screen active">
+            <div class="menu-grid">
+                <div class="menu-card" onclick="showCharacters()">
+                    <div class="menu-icon">🎴</div>
+                    <div class="menu-text">
+                        <h3>Characters</h3>
+                        <p>Meet the people</p>
+                    </div>
+                    <div class="menu-badge">7</div>
+                </div>
+
+                <div class="menu-card" onclick="showIconGuide()">
+                    <div class="menu-icon">🧠</div>
+                    <div class="menu-text">
+                        <h3>Icon Guide</h3>
+                        <p>Learn the system</p>
+                    </div>
+                </div>
+
+                <div class="menu-card" onclick="showChapterSelect()">
+                    <div class="menu-icon">📖</div>
+                    <div class="menu-text">
+                        <h3>Chapters</h3>
+                        <p>Read along</p>
+                    </div>
+                    <div class="menu-badge">17</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Screen -->
+        <div id="characterScreen" class="screen">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="card">
+                <div class="audio-btn" onclick="speakCharacter()">🔊</div>
+                <img id="charImage" class="card-image" src="" alt="">
+                <div class="card-title" id="charName"></div>
+                <div class="card-content">
+                    <div class="card-section">
+                        <strong>Clue</strong>
+                        <span id="charClue"></span>
+                    </div>
+                    <div class="card-section">
+                        <strong>Who</strong>
+                        <span id="charWho"></span>
+                    </div>
+                    <div class="card-section" id="personalitySection">
+                        <strong>Personality</strong>
+                        <span id="charPersonality"></span>
+                    </div>
+                    <div class="card-hint" id="charHint"></div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevCharacter()">← Previous</button>
+                <button class="btn btn-primary" onclick="nextCharacter()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Icon Guide Screen -->
+        <div id="iconGuideScreen" class="screen">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="card">
+                <div class="audio-btn" onclick="speakIconGuide()">🔊</div>
+                <div class="card-title">Icon System</div>
+                <div class="icon-guide-content">
+                    <div class="icon-guide-item">
+                        <div class="icon-guide-emoji">👤</div>
+                        <div class="icon-guide-text">
+                            <strong>Who</strong>
+                            <span>People in the scene</span>
+                        </div>
+                    </div>
+                    <div class="icon-guide-item">
+                        <div class="icon-guide-emoji">📍</div>
+                        <div class="icon-guide-text">
+                            <strong>Where</strong>
+                            <span>Location</span>
+                        </div>
+                    </div>
+                    <div class="icon-guide-item">
+                        <div class="icon-guide-emoji">⚡</div>
+                        <div class="icon-guide-text">
+                            <strong>What happened</strong>
+                            <span>Main event</span>
+                        </div>
+                    </div>
+                    <div class="icon-guide-item">
+                        <div class="icon-guide-emoji">❓</div>
+                        <div class="icon-guide-text">
+                            <strong>Confusing</strong>
+                            <span>Questions</span>
+                        </div>
+                    </div>
+                    <div class="card-hint">👉 Use this every time</div>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="showMenu()">Got it</button>
+        </div>
+
+        <!-- Chapter Selection Screen -->
+        <div id="chapterSelectScreen" class="screen">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="chapter-grid" id="chapterGrid"></div>
+        </div>
+
+        <!-- Chapter Detail Screen -->
+        <div id="chapterScreen" class="screen">
+            <button class="back-btn" onclick="showChapterSelect()">← Chapters</button>
+            <div class="chapter-card">
+                <div class="audio-btn" onclick="speakChapter()">🔊</div>
+                <div class="chapter-number" id="chapterNumber"></div>
+                
+                <div class="info-row">
+                    <div class="info-icon">👤</div>
+                    <div class="info-text">
+                        <div class="info-label">Who</div>
+                        <div class="info-value" id="chapterWho"></div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">📍</div>
+                    <div class="info-text">
+                        <div class="info-label">Where</div>
+                        <div class="info-value" id="chapterWhere"></div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">⚡</div>
+                    <div class="info-text">
+                        <div class="info-label">What happened</div>
+                        <div class="info-value" id="chapterWhat"></div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">❓</div>
+                    <div class="info-text">
+                        <div class="info-label">Confusing</div>
+                        <div class="info-value" id="chapterConfusing"></div>
+                    </div>
+                </div>
+
+                <div class="card-hint" id="chapterHint"></div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevChapter()">← Previous</button>
+                <button class="btn btn-primary" onclick="nextChapter()">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
